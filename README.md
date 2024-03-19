@@ -1,10 +1,10 @@
 # Recreational-Club-Membership
 CPS 406 Iteration 2
 
-Backend: Django (python)
-Frontend: React
-Database: SQL
-Communication: Rest API
+Backend: Django (python)<br>
+Frontend: React<br>
+Database: SQL<br>
+Communication: Rest API<br>
 
 Task Description:
 
