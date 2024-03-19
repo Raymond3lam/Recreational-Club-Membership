@@ -15,3 +15,8 @@ Once a month, the treasurer pays the rent for the hall in which the club meets, 
 The app should keep track of finances for the club and for each member, as they sometimes show up for practice but manage to sneak out without paying. 
 It may also send reminders to members about forthcoming practices, both regular and ad hoc ones, and threaten those who are a bit too casual with their payments
 
+Contributors:
+
+Parsa, Chris, Raymond, Luxman, Irfan
+
+
