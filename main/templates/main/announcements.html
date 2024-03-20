@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+   
+{% block content %}
+<h1>Announcements Board</h1>
+{% for announcement in announcements %}
+    <div class="card my-4">
+        <h5 class="card-header">{{ announcement.header }}</h5>
+        <div class="card-body">
+        <h5 class="card-title">{{ announcement.title }}</h5>
+        <p class="card-text">{{ announcement.content }}</p>
+        <a href="#" class="btn btn-primary">Sign up</a>
+        </div>
+    </div>
+{% endfor %}
+{% endblock content %}
