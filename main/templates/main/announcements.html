@@ -4,11 +4,17 @@
 <h1>Announcements Board</h1>
 {% for announcement in announcements %}
     <div class="card my-4">
-        <h5 class="card-header">{{ announcement.header }}</h5>
+        <h2 class="card-header">{{ announcement.title }}</h5>
         <div class="card-body">
-        <h5 class="card-title">{{ announcement.title }}</h5>
-        <p class="card-text">{{ announcement.content }}</p>
-        <a href="#" class="btn btn-primary">Sign up</a>
+            {% if announcement.date_posted != announcement.date_updated %}
+            <p class="card-text"><small>{{ announcement.author }} updated on: {{ announcement.date_updated }}</small></p>
+            {% else %}
+            <p class="card-text"><small>{{ announcement.author }} posted on: {{ announcement.date_posted }}</small></p>
+            {% endif %}
+            <h5 class="card-title">{{ announcement.content }}</h5>
+            <div class="d-flex justify-content-end">
+                <a href="#" class="btn btn-primary">Sign up</a>
+            </div>
         </div>
     </div>
 {% endfor %}

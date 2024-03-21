@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from . import models
 
 # Create your views here.
 def home(request):
@@ -12,22 +13,7 @@ def about(request):
 
 def announcements(request):
     context = {
-        'announcements': [
-            {
-                'header': 'Header 1', 
-                'title': 'Announcement 1', 
-                'content': 'This is the first announcement'
-            },
-            {
-                'header': 'Header 2', 
-                'title': 'Announcement 2', 
-                'content': 'This is the second announcement'
-            },
-            {
-                'header': 'Header 3', 
-                'title': 'Announcement 3', 
-                'content': 'This is the third announcement'
-            },
-        ]
+        'title': 'Club Announcements',
+        'announcements': models.Announcement.objects.all()
     }
     return render(request, 'main/announcements.html', context)
