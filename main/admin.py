@@ -5,3 +5,4 @@ from . import models
 admin.site.register(models.Announcement)
 admin.site.register(models.Coach)
 admin.site.register(models.Member)
+admin.site.register(models.Practice)
