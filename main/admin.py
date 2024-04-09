@@ -3,3 +3,5 @@ from . import models
 
 # Register your models here.
 admin.site.register(models.Announcement)
+admin.site.register(models.Coach)
+admin.site.register(models.Member)
