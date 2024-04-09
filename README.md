@@ -13,7 +13,6 @@ It may also send reminders to members about forthcoming practices, both regular 
 
 Parsa, Chris, Raymond, Luxman, Irfan
 
-
 ## Tech Stack
 
 - Backend: Django (python)
