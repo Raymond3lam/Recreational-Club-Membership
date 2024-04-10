@@ -3,7 +3,7 @@
 from django.db import migrations
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from main.models import CustomUser, Practice, Announcement
+from main.models import Practice, Announcement
 
 def create_groups(apps, schema_editor):
     members_group, created = Group.objects.get_or_create(name='Members')

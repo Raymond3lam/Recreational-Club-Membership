@@ -1,13 +1,20 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, Group
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 class CustomUser(AbstractUser):
     practices = models.ManyToManyField('Practice', related_name='user_practices')
-    groups = models.ManyToManyField(Group, related_name='users')
-    user_permissions = models.ManyToManyField(Permission, related_name='users')
 
+class Payment(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateTimeField(auto_now_add=True)
+    practice = models.ForeignKey('Practice', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('user', 'date', 'practice')
+        
 class Practice(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -32,6 +39,6 @@ class Announcement(models.Model):
     
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        members_group = Group.objects.get(name='Members')
+    if created and isinstance(instance, CustomUser):
+        members_group, created = Group.objects.get_or_create(name='Members')
         instance.groups.add(members_group)
