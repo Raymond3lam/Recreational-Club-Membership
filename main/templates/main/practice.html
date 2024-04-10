@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>{{ title }}</h2>
+
+{% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Schedule Practice</button>
+    </form>
+{% else %}
+    <p>You need to <a href="{% url 'login' %}">log in</a> to schedule a practice.</p>
+{% endif %}
+
+{% endblock %}

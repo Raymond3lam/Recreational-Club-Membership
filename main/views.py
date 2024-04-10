@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, PracticeForm
 
 # Create your views here.
 def home(request):
@@ -12,6 +12,21 @@ def about(request):
         'title': 'About Page'
     }
     return render(request, 'main/about.html', context)
+
+def practice(request):
+    if request.method == 'POST':
+        form = PracticeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('some_success_url') 
+    else:
+        form = PracticeForm()
+
+    context = {
+        'title': 'Schedule Practice',
+        'form': form  
+    }
+    return render(request, 'main/practice.html', context) 
 
 def signup(request):
     if request.method == 'POST':
