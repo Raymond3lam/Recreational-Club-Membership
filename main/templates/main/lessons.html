@@ -1,15 +1,14 @@
 {% extends 'main/base.html' %}
-
+{% load tags %}
 {% block content %}
 <style>
     table {
         margin-bottom: 20px;
+        width: 100%;
     }
-    th {
-        padding-right: 50px;
-    }
-    td {
-        padding-bottom: 40px;
+    th, td {
+        padding: 1em;
+        text-align: center;
     }
     tr {
         border: 1px solid black;
@@ -22,7 +21,8 @@
     <tr class="tableheader">
         <th>Practice</th>
         <th>Coach</th>
-        <th>Name</th>
+        <th>Date</th>
+        <th>Members</th>
         <th>Phone Number</th>
         <th>Address</th>
         <th>Payment Status</th>
@@ -31,6 +31,7 @@
     <tr>
         <td>{{ practice.name }}</td>
         <td>{{ practice.coach}}</td>
+        <td>{{ practice.date | date:"F d, Y" }}</td>
         <td>
             {% for member in practice.members.all %}
                 {{ member.first_name }}<br>
@@ -48,7 +49,13 @@
         </td>
         <td>
             {% for member in practice.members.all %}
-                {{ member.paid }}<br>
+                {% member_paid practice member as has_paid %}
+                {% if has_paid %}
+                    Paid
+                {% else %}
+                    Not Paid
+                {% endif %}
+                <br>
             {% endfor %}
         </td>
     </tr>

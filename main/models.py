@@ -4,11 +4,9 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 class CustomUser(AbstractUser):
-    practices = models.ManyToManyField('Practice', related_name='user_practices')
-    phone_number = models.CharField(max_length=15, null=True)
-    address = models.TextField(null=True)
-    paid = models.BooleanField(default=False)
-
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    
 class Payment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -22,10 +20,13 @@ class Practice(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     coach = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    members = models.ManyToManyField(CustomUser, related_name='member_practices')
-    
+    members = models.ManyToManyField(CustomUser, related_name='member_practices', blank=True)
+    date = models.DateTimeField(default=None, blank=True, null=True)
     def __str__(self):
         return self.name
+    
+    def paid (self, user):
+        return self.payment_set.filter(user=user).exists()
 
 
 # Create your models here.

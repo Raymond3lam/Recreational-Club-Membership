@@ -20,7 +20,8 @@ class LoginForm(forms.Form):
 class PracticeForm(forms.ModelForm):
     class Meta:
         model = Practice
-        fields = ['name', 'description', 'coach', 'members']
+        fields = ['name', 'description', 'coach', 'date', 'members']
         widgets = {
             'members': forms.CheckboxSelectMultiple(),
+            'date': forms.DateTimeInput(attrs={'type': 'datetime-local'})
         }

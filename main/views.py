@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models
-from .forms import RegisterForm, LoginForm
+from .models import Practice
+from .forms import RegisterForm, LoginForm, PracticeForm
 
 # Create your views here.
 def home(request):
