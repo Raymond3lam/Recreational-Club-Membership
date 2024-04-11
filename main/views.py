@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models
+from .models import Practice
 from .forms import RegisterForm, LoginForm
 
 # Create your views here.
@@ -47,3 +48,7 @@ def announcements(request):
         'announcements': models.Announcement.objects.all()
     }
     return render(request, 'main/announcements.html', context)
+
+def practice_members(request):
+    practices = Practice.objects.all()  # Get all Practice objects
+    return render(request, 'main/lessons.html', {'practices': practices})

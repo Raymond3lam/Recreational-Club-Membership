@@ -1,0 +1,57 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<style>
+    table {
+        margin-bottom: 20px;
+    }
+    th {
+        padding-right: 50px;
+    }
+    td {
+        padding-bottom: 40px;
+    }
+    tr {
+        border: 1px solid black;
+    }
+    .tableheader{
+        padding-bottom: 20px;
+    }
+</style>
+<table>
+    <tr class="tableheader">
+        <th>Practice</th>
+        <th>Coach</th>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Address</th>
+        <th>Payment Status</th>
+    </tr>
+    {% for practice in practices %}
+    <tr>
+        <td>{{ practice.name }}</td>
+        <td>{{ practice.coach}}</td>
+        <td>
+            {% for member in practice.members.all %}
+                {{ member.first_name }}<br>
+            {% endfor %}
+        </td>
+        <td>
+            {% for member in practice.members.all %}
+                {{ member.phone_number }}<br>
+            {% endfor %}
+        </td>
+        <td>
+            {% for member in practice.members.all %}
+                {{ member.address }}<br>
+            {% endfor %}
+        </td>
+        <td>
+            {% for member in practice.members.all %}
+                {{ member.paid }}<br>
+            {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock content %}

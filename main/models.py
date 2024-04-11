@@ -5,6 +5,9 @@ from django.db.models.signals import post_save
 
 class CustomUser(AbstractUser):
     practices = models.ManyToManyField('Practice', related_name='user_practices')
+    phone_number = models.CharField(max_length=15, null=True)
+    address = models.TextField(null=True)
+    paid = models.BooleanField(default=False)
 
 class Payment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
