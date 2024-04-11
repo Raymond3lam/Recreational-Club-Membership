@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models
 from .models import Practice
-from .forms import RegisterForm, LoginForm, PracticeForm
+from .forms import PaymentForm, RegisterForm, LoginForm, PracticeForm
 
 # Create your views here.
 def home(request):
@@ -19,7 +19,7 @@ def practice(request):
         form = PracticeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('some_success_url') 
+            return redirect('practice')
     else:
         form = PracticeForm()
 
@@ -28,6 +28,21 @@ def practice(request):
         'form': form  
     }
     return render(request, 'main/practice.html', context) 
+
+def payment(request):
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('payment')
+    else:
+        form = PaymentForm(user=request.user)
+    
+    context = {
+        'title': 'Make Payment',
+        'form': form
+    }
+    return render(request, 'main/payment.html', context)
 
 def signup(request):
     if request.method == 'POST':
