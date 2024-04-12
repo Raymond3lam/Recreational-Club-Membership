@@ -259,3 +259,23 @@ def finances(request):
         'total_revenue': total_revenue
     }
     return render(request, 'main/finances.html', context)
+
+@permission_required('main.view_customuser')
+def get_members(request):
+    my_dict = {}
+    practices = Practice.objects.all()
+    unpaid = 0
+    for practice in practices:
+        for member in practice.members.all():
+            paid = Practice.paid(practice, member)
+            if paid:
+                unpaid = 0
+            else:
+                unpaid = 1
+            if member in my_dict:
+                attendances, unpaid_old = my_dict[member]
+                my_dict[member] = (attendances + 1, unpaid_old + unpaid)
+            else:
+                my_dict[member] = (1, unpaid)
+    context = {"members": my_dict}
+    return render(request, 'main/lessons.html', context=context)

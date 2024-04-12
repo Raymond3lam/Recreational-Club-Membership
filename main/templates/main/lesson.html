@@ -1,0 +1,97 @@
+{% extends 'main/base.html' %}
+{% load tags %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif; 
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse; 
+        margin-bottom: 20px;
+    }
+    th, td {
+        padding: 0.5em; 
+        text-align: center;
+        border-bottom: 1px solid #ccc; 
+    }
+    th {
+        background-color: #f4f4f4; 
+        color: #333; 
+        cursor: pointer;
+    }
+    tr:hover {
+        background-color: #f9f9f9; 
+    }
+    .tableheader {
+        padding-bottom: 20px;
+    }
+    @media screen and (max-width: 600px) {
+        th, td {
+            padding: 10px; 
+        }
+    }
+</style>
+<table id="myTable">
+    <thead>
+        <tr class="tableheader">
+            <th onclick = "sortTable(2)">Member's Name</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th onclick = "sortTable(0)">Class Attended</th>
+            <th onclick = "sortTable(1)">Unpaid Classes</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for member, attendance in members.items %}
+        <tr>
+            <td>{{ member.first_name }}</td>
+            <td>{{ member.phone_number }}</td>
+            <td>{{ member.address }}</td>
+            <td>{{ attendance.0 }}</td>
+            <td>{{ attendance.1 }}</td>
+                
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+    function sortTable(columnIndex) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("myTable");
+        switching = true;
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[columnIndex];
+                y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+                
+                // Check if the column contains numeric values
+                var xValue = parseFloat(x.innerHTML.toLowerCase().replace(/[^0-9.]/g, ''));
+                var yValue = parseFloat(y.innerHTML.toLowerCase().replace(/[^0-9.]/g, ''));
+                
+                if (!isNaN(xValue) && !isNaN(yValue)) {
+                    // If both values are numeric, compare them as numbers
+                    if (xValue < yValue) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else {
+                    // If one or both values are not numeric, compare them as strings
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+            }
+        }
+    }
+</script>
+{% endblock content %}

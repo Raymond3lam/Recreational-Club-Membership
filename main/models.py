@@ -38,7 +38,6 @@ class Practice(models.Model):
     def paid (self, user):
         return self.payment_set.filter(user=user).exists()
 
-
 # Create your models here.
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
