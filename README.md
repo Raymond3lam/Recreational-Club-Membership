@@ -9,14 +9,52 @@ Once a month, the treasurer pays the rent for the hall in which the club meets, 
 The app should keep track of finances for the club and for each member, as they sometimes show up for practice but manage to sneak out without paying. 
 It may also send reminders to members about forthcoming practices, both regular and ad hoc ones, and threaten those who are a bit too casual with their payments
 
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/Raymond3lam/Recreational-Club-Membership.git
+```
+
+Go to the project directory
+
+```bash
+  cd Recreational-Club-Membership 
+```
+
+Install dependencies
+
+```bash
+  pip install -r requirements.txt
+```
+
+Apply Database Migrations
+
+```bash
+  python manage.py makemigrations
+  python manage.py migrate
+```
+
+Start the server
+
+```bash
+  python manage.py runserver
+```
+
+View application at
+
+```bash
+  http://127.0.0.1:8000/
+```
+
 ## Contributing
 
 Parsa, Chris, Raymond, Luxman, Irfan
 
 ## Tech Stack
 
-- Backend: Django (python)
-- Frontend: React
+- Django (python)
 - Database: SQL
 - Communication: Rest API
 
