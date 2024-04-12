@@ -3,16 +3,59 @@
 {% load crispy_forms_tags %}
 <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
 
+<style>
+    .small-textarea {
+        height: 50px;
+    }
+</style>
+
 <h1 class="text-center mt-5">Signup</h1>
 
 <div class="container">
     <div class="row justify-content-center">
-        <form method="POST" class="w-50">
+        <form method="POST" class="w-75">
             {% csrf_token %}
-            {{ form|crispy}}
-            <button type="submit" class="btn btn-primary">Sign up</button>        </form>
-
+            <div class="row">
+                <div class="col">
+                    {{ form.username|as_crispy_field }}
+                    {{ form.password1|as_crispy_field }}
+                    {{ form.password2|as_crispy_field }}
+                </div>
+                <div class="col">
+                    {{ form.first_name|as_crispy_field }}
+                    {{ form.last_name|as_crispy_field }}
+                    {{ form.phone_number|as_crispy_field }}
+                    {{ form.address|as_crispy_field }}
+                    <div class="col-19 text-end">
+                        <button type="submit" class="btn btn-primary mt-3">Sign up</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const phoneInput = document.getElementById('id_phone_number');
+        phoneInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                value = '(' + value.substring(0, 3) + ') ' + value.substring(3, 6) + '-' + value.substring(6, 10);
+            }
+            e.target.value = value;
+        });
+
+        phoneInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace') {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, -1);
+                const value = e.target.value;
+                if (value.length > 0) {
+                    e.target.value = '(' + value.substring(0, 3) + ') ' + value.substring(3, 6) + '-' + value.substring(6, 10);
+                }
+            }
+        });
+    });
+</script>
 
 {% endblock %}
