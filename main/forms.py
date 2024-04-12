@@ -2,6 +2,8 @@ from django import forms
 from django.utils.html import format_html
 from .models import CustomUser, Payment, Announcement, Practice
 from django.contrib.auth.forms import UserCreationForm
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Row, Column, Div
 
 class AnnouncementForm(forms.ModelForm):
     group = forms.ChoiceField(
@@ -90,6 +92,7 @@ class UpdateAnnouncementForm(forms.ModelForm):
         fields = ['title', 'content', 'group', 'target', 'target_practices']
 
 class RegisterForm(UserCreationForm):
+    address = forms.CharField(widget=forms.TextInput(attrs={'rows': 3}))
     class Meta:
         model = CustomUser
         fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'phone_number', 'address']
