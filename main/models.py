@@ -13,6 +13,12 @@ class CustomUser(AbstractUser):
             ('manage_coaches', 'Can manage coaches'),
             ('manage_finances', 'Can manage finances')
         ]
+
+    def payment_count(self):
+        return self.payment_set.count()
+    
+    def practice_count(self):
+        return self.member_practices.count()
     
 class Payment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

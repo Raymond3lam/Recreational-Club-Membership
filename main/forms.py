@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 class AnnouncementForm(forms.ModelForm):
     group = forms.ChoiceField(
-        choices=[('all', 'All Members'), ('coaches', 'Coaches'), ('members', 'Members')], 
+        choices=[('all', 'All Members'), ('coaches', 'Coaches'), ('members', 'Members'), ('snakes', 'Snakes')],
     )
     
     target = forms.ModelMultipleChoiceField(
@@ -27,13 +27,16 @@ class AnnouncementForm(forms.ModelForm):
         self.fields['target'].label_from_instance = self.label_from_instance
 
     def label_from_instance(self, obj):
+        skip = False
         if obj.groups.filter(name='Coach').exists():
             group = 'coaches'
         elif obj.groups.filter(name='Member').exists():
             group = 'members'
         else:
             group = ''
-        return format_html('<label data-group="{}">{}</label>', group, obj.get_full_name())
+        if obj.payment_count() < obj.practice_count():
+            skip = True
+        return format_html('<label data-skip="{}" data-group="{}">{}</label>', skip, group, obj.get_full_name())
 
     class Meta:
         model = Announcement
@@ -49,7 +52,7 @@ class AnnouncementForm(forms.ModelForm):
     
 class UpdateAnnouncementForm(forms.ModelForm):
     group = forms.ChoiceField(
-        choices=[('all', 'All Members'), ('coaches', 'Coaches'), ('members', 'Members')], 
+        choices=[('all', 'All Members'), ('coaches', 'Coaches'), ('members', 'Members'), ('snakes', 'Snakes')],
     )
     
     target = forms.ModelMultipleChoiceField(
@@ -70,13 +73,17 @@ class UpdateAnnouncementForm(forms.ModelForm):
         self.fields['target'].label_from_instance = self.label_from_instance
 
     def label_from_instance(self, obj):
+        skip = False
         if obj.groups.filter(name='Coach').exists():
             group = 'coaches'
         elif obj.groups.filter(name='Member').exists():
             group = 'members'
         else:
             group = ''
-        return format_html('<label data-group="{}">{}</label>', group, obj.get_full_name())
+        if obj.payment_count() < obj.practice_count():
+            skip = True
+        return format_html('<label data-skip="{}" data-group="{}">{}</label>', skip, group, obj.get_full_name())
+
     
     class Meta:
         model = Announcement

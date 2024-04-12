@@ -19,7 +19,8 @@
             var group = $(this).val();
             $('form input[type=checkbox]').each(function() {
                 var userGroup = $(this).parent().find('label').find('label').data('group');
-                if (group == 'all' || group == userGroup) {
+                var skip = $(this).parent().find('label').find('label').data('skip');
+                if (group == 'all' || userGroup == group || (group == 'snakes' && skip == 'True')) {
                     $(this).closest('.form-check').show();
                 } else {
                     $(this).closest('.form-check').hide();
