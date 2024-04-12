@@ -1,11 +1,14 @@
 {% extends 'main/base.html' %}
 {% block content %}
+
+{% load crispy_forms_tags %}
+
 <h2>{{ title }}</h2>
 
 {% if user.is_authenticated %}
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form|crispy}}
         <button type="submit" class="btn btn-primary">Schedule Practice</button>
     </form>
 {% else %}

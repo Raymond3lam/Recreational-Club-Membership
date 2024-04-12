@@ -1,6 +1,14 @@
-<h1>Signup</h1>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Sign up</button>
-</form>
+{% load crispy_forms_tags %}
+<link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+
+<h1 class="text-center mt-5">Signup</h1>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <form method="POST" class="w-50">
+            {% csrf_token %}
+            {{ form|crispy}}
+            <button type="submit" class="btn btn-primary">Sign up</button>
+        </form>
+    </div>
+</div>
