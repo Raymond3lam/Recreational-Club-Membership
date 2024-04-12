@@ -184,11 +184,6 @@ def announcements(request):
     }
     return render(request, 'main/announcements.html', context)
 
-@permission_required('main.view_customuser')
-def practice_members(request):
-    practices = Practice.objects.all()  # Get all Practice objects
-    return render(request, 'main/lessons.html', {'practices': practices})
-
 @permission_required('main.manage_coaches')
 def manage_coaches(request):
     if request.method == 'POST':
@@ -261,7 +256,7 @@ def finances(request):
     return render(request, 'main/finances.html', context)
 
 @permission_required('main.view_customuser')
-def lessons(request):
+def members(request):
     my_dict = {}
     practices = Practice.objects.all()
     unpaid = 0
@@ -278,4 +273,4 @@ def lessons(request):
             else:
                 my_dict[member] = (1, unpaid)
     context = {"members": my_dict}
-    return render(request, 'main/lessons.html', context=context)
+    return render(request, 'main/members.html', context=context)
