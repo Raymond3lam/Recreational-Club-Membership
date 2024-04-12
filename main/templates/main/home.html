@@ -1,8 +1,20 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% block content %}
-<h1>Welcome to the Club!</h1>
-<div>
-    <img src = "{% static 'Orange-Website-Construction-Email-Header-1.jpg' %}" width="500" height="600">
+<style>
+    img {
+        margin-left: 9px;
+    }
+</style>
+<h1 style = "font-weight: bolder;">Welcome to the Club!</h1>
+<div style = "margin-top: 30px;">
+    <img src = "{% static 'gym_img1.jpg' %}" width="300" height="300">
+    <img src = "{% static 'gym_img2.jpg' %}" width="300" height="300">
+    <img src = "{% static 'gym_img3.jpg' %}" width="300" height="300">
+</div>
+<div style = "margin-top: 15px;">
+    <img src = "{% static 'gym_img4.jpg' %}" width="300" height="300">
+    <img src = "{% static 'gym_img5.jpg' %}" width="300" height="300">
+    <img src = "{% static 'gym_img6.jpg' %}" width="300" height="300">
 </div>
 {% endblock content %}
