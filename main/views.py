@@ -261,7 +261,7 @@ def finances(request):
     return render(request, 'main/finances.html', context)
 
 @permission_required('main.view_customuser')
-def get_members(request):
+def lessons(request):
     my_dict = {}
     practices = Practice.objects.all()
     unpaid = 0
