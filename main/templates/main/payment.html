@@ -40,4 +40,33 @@
     {% endif %}
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cardNumberInput = document.getElementById('id_card_number');
+        const expirationDateInput = document.getElementById('id_expiration_date');
+        
+        cardNumberInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 16) {
+                value = value.substring(0, 16);
+            }
+            if (value.length > 0) {
+                value = value.match(/.{1,4}/g).join(' ').trim();
+            }
+            e.target.value = value;
+        });
+
+        expirationDateInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 4) {
+                value = value.substring(0, 4);
+            }
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2);
+            }
+            e.target.value = value;
+        });
+    });
+</script>
+
 {% endblock %}

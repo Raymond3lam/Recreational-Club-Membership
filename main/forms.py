@@ -156,10 +156,7 @@ class PaymentForm(forms.ModelForm):
 
     payment_method = forms.ChoiceField(choices=[('credit', 'Credit Card'), ('debit', 'Debit Card')])
     card_number = forms.CharField()
-    expiration_date = forms.DateField(
-        widget=forms.DateInput(format='%Y-%m', attrs={'type': 'month'}),
-        input_formats=('%Y-%m', )
-    )
+    expiration_date = forms.CharField(label='Expiry Date', max_length=5, help_text='Format: MM/YY')
     cvv = forms.CharField()
     
     class Meta:
