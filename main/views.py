@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models
-from .models import Practice, Group
+from .models import Practice, Group, CustomUser
 from .forms import ManagePracticeCoachesForm, AddMemberToPracticeForm, PaymentForm, RegisterForm, LoginForm, CreatePracticeForm, AddCoachForm
 from django.contrib.auth.decorators import login_required, permission_required
 
@@ -138,3 +138,23 @@ def remove_member(request, member_id, practice_id):
     member = models.CustomUser.objects.get(id=member_id)
     practice.members.remove(member)
     return redirect('practice')
+
+@permission_required('main.view_customuser')
+def get_members(request):
+    my_dict = {}
+    practices = Practice.objects.all()
+    unpaid = 0
+    for practice in practices:
+        for member in practice.members.all():
+            paid = Practice.paid(practice, member)
+            if paid:
+                unpaid = 0
+            else:
+                unpaid = 1
+            if member in my_dict:
+                attendances, unpaid_old = my_dict[member]
+                my_dict[member] = (attendances + 1, unpaid_old + unpaid)
+            else:
+                my_dict[member] = (1, unpaid)
+    context = {"members": my_dict}
+    return render(request, 'main/lessons.html', context=context)
