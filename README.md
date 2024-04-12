@@ -56,6 +56,4 @@ Parsa, Chris, Raymond, Luxman, Irfan
 
 - Django (python)
 - Database: SQL
-- Communication: Rest API
-
 
