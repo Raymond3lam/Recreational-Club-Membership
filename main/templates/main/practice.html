@@ -3,25 +3,85 @@
 
 {% load crispy_forms_tags %}
 
+<style>
+    h2, h3 {
+        font-family: Arial, sans-serif;
+        color: #333;
+        text-align: center;
+    }
+    .form-section {
+        margin: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #007bff;
+        color: white;
+    }
+    td {
+        text-align: left;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        padding: 10px 20px;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn-warning {
+        background-color: #ffc107;
+        color: black;
+        border: none;
+        padding: 8px 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .btn:hover {
+        opacity: 0.8;
+    }
+</style>
+
 <h2>{{ title }}</h2>
 
 {% if user.is_authenticated %}
-    {% if form1 %}
-        <h3>Add Practice</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form1|crispy }}
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    {% endif %}
-    {% if form2 %}
-        <h3>Update Practice</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form2|crispy }}
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    {% endif %}
+    <div class="form-section">
+        {% if form1 %}
+            <h3>Add Practice</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form1|crispy }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        {% endif %}
+    </div>
+    
+    <div class="form-section">
+        {% if form2 %}
+            <h3>Update Practice</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form2|crispy }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        {% endif %}
+    </div>
+
     {% if perms.main.change_practice %}
         <h3>Practices</h3>
         <table class="table">

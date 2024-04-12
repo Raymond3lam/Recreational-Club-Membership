@@ -2,63 +2,81 @@
 {% load tags %}
 {% block content %}
 <style>
+    body {
+        font-family: Arial, sans-serif; 
+    }
     table {
-        margin-bottom: 20px;
         width: 100%;
+        border-collapse: collapse; 
+        margin-bottom: 20px;
     }
     th, td {
-        padding: 1em;
+        padding: 0.5em; 
         text-align: center;
+        border-bottom: 1px solid #ccc; 
     }
-    tr {
-        border: 1px solid black;
+    th {
+        background-color: #f4f4f4; 
+        color: #333; 
     }
-    .tableheader{
+    tr:hover {
+        background-color: #f9f9f9; 
+    }
+    .tableheader {
         padding-bottom: 20px;
+    }
+    @media screen and (max-width: 600px) {
+        th, td {
+            padding: 10px; 
+        }
     }
 </style>
 <table>
-    <tr class="tableheader">
-        <th>Practice</th>
-        <th>Coach</th>
-        <th>Date</th>
-        <th>Members</th>
-        <th>Phone Number</th>
-        <th>Address</th>
-        <th>Payment Status</th>
-    </tr>
-    {% for practice in practices %}
-    <tr>
-        <td>{{ practice.name }}</td>
-        <td>{{ practice.coach}}</td>
-        <td>{{ practice.date | date:"F d, Y" }}</td>
-        <td>
-            {% for member in practice.members.all %}
-                {{ member.first_name }}<br>
-            {% endfor %}
-        </td>
-        <td>
-            {% for member in practice.members.all %}
-                {{ member.phone_number }}<br>
-            {% endfor %}
-        </td>
-        <td>
-            {% for member in practice.members.all %}
-                {{ member.address }}<br>
-            {% endfor %}
-        </td>
-        <td>
-            {% for member in practice.members.all %}
-                {% member_paid practice member as has_paid %}
-                {% if has_paid %}
-                    Paid
-                {% else %}
-                    Not Paid
-                {% endif %}
-                <br>
-            {% endfor %}
-        </td>
-    </tr>
-    {% endfor %}
+    <thead>
+        <tr class="tableheader">
+            <th>Practice</th>
+            <th>Coach</th>
+            <th>Date</th>
+            <th>Members</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Payment Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for practice in practices %}
+        <tr>
+            <td>{{ practice.name }}</td>
+            <td>{{ practice.coach }}</td>
+            <td>{{ practice.date | date:"F d, Y" }}</td>
+            <td>
+                {% for member in practice.members.all %}
+                    {{ member.first_name }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for member in practice.members.all %}
+                    {{ member.phone_number }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for member in practice.members.all %}
+                    {{ member.address }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for member in practice.members.all %}
+                    {% member_paid practice member as has_paid %}
+                    {% if has_paid %}
+                        Paid
+                    {% else %}
+                        Not Paid
+                    {% endif %}
+                    <br>
+                {% endfor %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock content %}

@@ -2,19 +2,45 @@
 {% load static %}
 {% block content %}
 <style>
-    img {
-        margin-left: 9px;
+    body {
+        font-family: 'Arial', sans-serif;
+        color: #333;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    h1 {
+        font-weight: bolder;
+        text-align: center;
+        color: #000000; 
+        margin-top: 30px;
+        margin-bottom: 20px;
+    }
+    .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 15px;
+    }
+    .gallery img {
+        margin: 9px;
+        width: 300px;
+        height: 300px;
+        border-radius: 10px; 
+        transition: transform 0.3s ease; 
+    }
+    .gallery img:hover {
+        transform: scale(1.05); 
+        cursor: pointer;
     }
 </style>
-<h1 style = "font-weight: bolder;">Welcome to the Club!</h1>
-<div style = "margin-top: 30px;">
-    <img src = "{% static 'gym_img1.jpg' %}" width="300" height="300">
-    <img src = "{% static 'gym_img2.jpg' %}" width="300" height="300">
-    <img src = "{% static 'gym_img3.jpg' %}" width="300" height="300">
-</div>
-<div style = "margin-top: 15px;">
-    <img src = "{% static 'gym_img4.jpg' %}" width="300" height="300">
-    <img src = "{% static 'gym_img5.jpg' %}" width="300" height="300">
-    <img src = "{% static 'gym_img6.jpg' %}" width="300" height="300">
+<h1>Welcome to the Club!</h1>
+<div class="gallery">
+    <img src="{% static 'gym_img1.jpg' %}">
+    <img src="{% static 'gym_img2.jpg' %}">
+    <img src="{% static 'gym_img3.jpg' %}">
+    <img src="{% static 'gym_img4.jpg' %}">
+    <img src="{% static 'gym_img5.jpg' %}">
+    <img src="{% static 'gym_img6.jpg' %}">
 </div>
 {% endblock content %}
