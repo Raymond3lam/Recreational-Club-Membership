@@ -1,0 +1,29 @@
+{% extends 'main/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<h1>Create Announcement</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy}}
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#id_group').change(function() {
+            var group = $(this).val();
+            $('form input[type=checkbox]').each(function() {
+                var userGroup = $(this).parent().find('label').find('label').data('group');
+                if (group == 'all' || group == userGroup) {
+                    $(this).closest('.form-check').show();
+                } else {
+                    $(this).closest('.form-check').hide();
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

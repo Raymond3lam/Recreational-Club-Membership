@@ -23,6 +23,9 @@ class Payment(models.Model):
     class Meta:
         unique_together = ('user', 'date', 'practice')
         
+
+
+
 class Practice(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -45,6 +48,9 @@ class Announcement(models.Model):
     
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+    target = models.ManyToManyField(CustomUser, related_name='targeted_users', blank=True)
+    target_practices = models.ManyToManyField(Practice, related_name='targeted_practices', blank=True)
+
     def __str__(self):
         return self.title
     
@@ -56,8 +62,10 @@ def create_user_profile(sender, instance, created, **kwargs):
         treasurer_group.permissions.add(Permission.objects.get(codename='manage_finances'))
         treasurer_group.permissions.add(Permission.objects.get(codename='add_practice'))
         treasurer_group.permissions.add(Permission.objects.get(codename='view_customuser'))
+        treasurer_group.permissions.add(Permission.objects.get(codename='add_announcement'))
         coach_group, created = Group.objects.get_or_create(name='Coach')
         coach_group.permissions.add(Permission.objects.get(codename='change_practice'))
+        coach_group.permissions.add(Permission.objects.get(codename='add_announcement'))
         member_group, created = Group.objects.get_or_create(name='Member')
         member_group.permissions.add(Permission.objects.get(codename='add_payment'))
         instance.groups.add(member_group)

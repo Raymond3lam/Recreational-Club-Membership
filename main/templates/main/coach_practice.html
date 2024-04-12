@@ -60,34 +60,13 @@
 <h2>{{ title }}</h2>
 
 {% if user.is_authenticated %}
-    <div class="form-section">
-        {% if form1 %}
-            <h3>Add Practice</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ form1|crispy }}
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        {% endif %}
-    </div>
-    
-    <div class="form-section">
-        {% if form2 %}
-            <h3>Update Practice</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ form2|crispy }}
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-        {% endif %}
-    </div>
-
     {% if perms.main.change_practice %}
         <h3>Practices</h3>
         <table class="table">
             <thead>
                 <tr>
                     <th>Title</th>
+                    <th>Coach</th>
                     <th>Date</th>
                     <th>Members</th>
                     <th>Actions</th>
@@ -97,6 +76,7 @@
                 {% for practice in practices %}
                 <tr>
                     <td>{{ practice.name }}</td>
+                    <td>{{ practice.coach.first_name }} {{ practice.coach.last_name }}</td>
                     <td>{{ practice.date }}</td>
                     <td>
                         {% for member in practice.members.all %}

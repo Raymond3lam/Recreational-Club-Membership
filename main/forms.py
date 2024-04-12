@@ -1,10 +1,86 @@
 from django import forms
-from .models import CustomUser, Payment
+from django.utils.html import format_html
+from .models import CustomUser, Payment, Announcement, Practice
 from django.contrib.auth.forms import UserCreationForm
-from .models import Practice
 
+class AnnouncementForm(forms.ModelForm):
+    group = forms.ChoiceField(
+        choices=[('all', 'All Members'), ('coaches', 'Coaches'), ('members', 'Members')], 
+    )
+    
+    target = forms.ModelMultipleChoiceField(
+        queryset=CustomUser.objects.all(), 
+        required=False, 
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'user-checkbox'})
+    )
 
+    target_practices = forms.ModelMultipleChoiceField(
+        queryset=Practice.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'practice-checkbox'})
+    )
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['target'].queryset = CustomUser.objects.exclude(id=self.user.id)
+        self.fields['target'].label_from_instance = self.label_from_instance
+
+    def label_from_instance(self, obj):
+        if obj.groups.filter(name='Coach').exists():
+            group = 'coaches'
+        elif obj.groups.filter(name='Member').exists():
+            group = 'members'
+        else:
+            group = ''
+        return format_html('<label data-group="{}">{}</label>', group, obj.get_full_name())
+
+    class Meta:
+        model = Announcement
+        fields = ['title', 'content', 'group', 'target', 'target_practices']
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.author = self.user
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
+    
+class UpdateAnnouncementForm(forms.ModelForm):
+    group = forms.ChoiceField(
+        choices=[('all', 'All Members'), ('coaches', 'Coaches'), ('members', 'Members')], 
+    )
+    
+    target = forms.ModelMultipleChoiceField(
+        queryset=CustomUser.objects.all(), 
+        required=False, 
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'user-checkbox'})
+    )
+
+    target_practices = forms.ModelMultipleChoiceField(
+        queryset=Practice.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'practice-checkbox'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['target'].queryset = CustomUser.objects.exclude(id=self.instance.author.id)
+        self.fields['target'].label_from_instance = self.label_from_instance
+
+    def label_from_instance(self, obj):
+        if obj.groups.filter(name='Coach').exists():
+            group = 'coaches'
+        elif obj.groups.filter(name='Member').exists():
+            group = 'members'
+        else:
+            group = ''
+        return format_html('<label data-group="{}">{}</label>', group, obj.get_full_name())
+    
+    class Meta:
+        model = Announcement
+        fields = ['title', 'content', 'group', 'target', 'target_practices']
 
 class RegisterForm(UserCreationForm):
     class Meta:
@@ -22,7 +98,7 @@ class AddCoachForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         member_group = CustomUser.objects.filter(groups__name='Member')
         self.fields['member'].queryset = member_group
-        self.fields['member'].label_from_instance = lambda obj: obj.first_name
+        self.fields['member'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     class Meta:
         model = CustomUser
@@ -33,7 +109,7 @@ class CreatePracticeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         coach_group = CustomUser.objects.filter(groups__name='Coach')
         self.fields['coach'].queryset = coach_group
-        self.fields['coach'].label_from_instance = lambda obj: obj.first_name
+        self.fields['coach'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     class Meta:
         model = Practice
@@ -49,31 +125,30 @@ class AddMemberToPracticeForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.id:
             self.fields['members'].queryset = CustomUser.objects.filter(groups__name='Member').exclude(member_practices=self.instance)
-            self.fields['members'].label_from_instance = lambda obj: obj.first_name
+            self.fields['members'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     class Meta:
         model = Practice
         fields = ['members']
 
 class ManagePracticeCoachesForm(forms.ModelForm):
-    practice = forms.ModelChoiceField(queryset=Practice.objects.all())
+    coach = forms.ModelChoiceField(queryset=CustomUser.objects.filter(groups__name='Coach'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['coach'].queryset = CustomUser.objects.filter(groups__name='Coach')
-        self.fields['coach'].label_from_instance = lambda obj: obj.first_name
+        self.fields['coach'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     class Meta:
         model = Practice
-        fields = ['practice', 'coach']
+        fields = ['coach']
 
 class PaymentForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.fields['practice'].queryset = Practice.objects.exclude(payment__user=self.user)
-        self.fields['practice'].label_from_instance = lambda obj: obj.name
+        self.fields['practice'].queryset = Practice.objects.exclude(members=self.user)
+        self.fields['practice'].label_from_instance = lambda obj: f"{obj.name} - {obj.coach.first_name} {obj.coach.last_name}"
 
     payment_method = forms.ChoiceField(choices=[('credit', 'Credit Card'), ('debit', 'Debit Card')])
     card_number = forms.CharField()
