@@ -60,9 +60,6 @@ def treasurer_practice(request):
     practices = Practice.objects.all()
     form = CreatePracticeForm()
 
-
-    total_member_payments = Payment.objects.aggregate(total=Sum('amount'))['total'] or 0
-
     if request.method == 'POST':
         form = CreatePracticeForm(request.POST)
     if form.is_valid():
@@ -82,8 +79,8 @@ def treasurer_practice(request):
     for practice in practices:
         practice.form = ManagePracticeCoachesForm(instance=practice)
     if request.method == 'POST':
-        old_coach = practice.coach
         practice = Practice.objects.get(id=request.POST.get('practice_id'))
+        old_coach = practice.coach
         form = ManagePracticeCoachesForm(request.POST, instance=practice)
         if form.is_valid():
             practice = form.save()
@@ -105,12 +102,8 @@ def treasurer_practice(request):
             target_users = models.CustomUser.objects.filter(username=practice.coach.username)
             announcement.target.set(target_users)
             return redirect('treasurer_practice')
-    context.update({'practices': practices, 'form': form, 'total_member_payments': total_member_payments,'total_revenue': total_member_payments })
+    context.update({'practices': practices, 'form': form })
     return render(request, 'main/treasurer_practice.html', context)
-
-
-
-
 
 def delete_practice(request, id):
     practice = Practice.objects.get(id=id)
@@ -256,3 +249,13 @@ def update_announcement(request,id):
         return render(request, 'main/update_announcement.html', {'form': form})
     else:
         return redirect('announcements')
+    
+def finances(request):
+    total_member_payments = Payment.objects.aggregate(total=Sum('amount'))['total'] or 0
+    total_revenue = total_member_payments
+    context = {
+        'title': 'Club Finances',
+        'total_member_payments': total_member_payments,
+        'total_revenue': total_revenue
+    }
+    return render(request, 'main/finances.html', context)

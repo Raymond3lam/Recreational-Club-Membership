@@ -19,4 +19,5 @@ urlpatterns = [
     path('add_announcement/', views.add_accountment, name='add_announcement'),
     path('delete_announcement/<int:id>/', views.delete_announcement, name='delete_announcement'),
     path('update_announcement/<int:id>/', views.update_announcement, name='update_announcement'),
+    path('finances/', views.finances, name='finances'),
 ]

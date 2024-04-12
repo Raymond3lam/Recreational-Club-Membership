@@ -46,12 +46,12 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'about' %}">About</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'announcements' %}">Announcements</a>
-          </li>
         </ul>
           {% if user.is_authenticated %}
           <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'announcements' %}">Announcements</a>
+            </li>
             {% if perms.main.manage_coaches %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'coach' %}">Manage Coaches</a>
@@ -75,6 +75,11 @@
             {% if perms.main.add_payment %}
             </li class="nav-item">
               <a class="nav-link" href="{% url 'payment' %}">Payment</a>
+            </li>
+            {% endif %}
+            {% if perms.main.manage_finances %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'finances' %}">Finances</a>
             </li>
             {% endif %}
           </ul>

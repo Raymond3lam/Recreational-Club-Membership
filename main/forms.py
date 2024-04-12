@@ -147,7 +147,8 @@ class PaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.fields['practice'].queryset = Practice.objects.exclude(members=self.user)
+        paid_practices_ids = self.user.payment_set.values_list('practice', flat=True)
+        self.fields['practice'].queryset = Practice.objects.exclude(id__in=paid_practices_ids)
         self.fields['practice'].label_from_instance = lambda obj: f"{obj.name} - {obj.coach.first_name} {obj.coach.last_name}"
 
     payment_method = forms.ChoiceField(choices=[('credit', 'Credit Card'), ('debit', 'Debit Card')])
@@ -168,4 +169,7 @@ class PaymentForm(forms.ModelForm):
         instance.amount = 10
         if commit:
             instance.save()
+            practice = instance.practice
+            practice.members.add(self.user)
+            practice.save()
         return instance
