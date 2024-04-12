@@ -1,16 +1,23 @@
+from django.utils import timezone
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
+
+    class Meta:
+        permissions = [
+            ('manage_coaches', 'Can manage coaches'),
+            ('manage_finances', 'Can manage finances')
+        ]
     
 class Payment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(default=timezone.now)
     practice = models.ForeignKey('Practice', on_delete=models.CASCADE)
 
     class Meta:
@@ -44,6 +51,14 @@ class Announcement(models.Model):
     
 @receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created and isinstance(instance, CustomUser):
-        members_group, created = Group.objects.get_or_create(name='Members')
-        instance.groups.add(members_group)
+    if created:
+        treasurer_group, created = Group.objects.get_or_create(name='Treasurer')
+        treasurer_group.permissions.add(Permission.objects.get(codename='manage_coaches'))
+        treasurer_group.permissions.add(Permission.objects.get(codename='manage_finances'))
+        treasurer_group.permissions.add(Permission.objects.get(codename='add_practice'))
+        treasurer_group.permissions.add(Permission.objects.get(codename='view_customuser'))
+        coach_group, created = Group.objects.get_or_create(name='Coach')
+        coach_group.permissions.add(Permission.objects.get(codename='change_practice'))
+        member_group, created = Group.objects.get_or_create(name='Member')
+        member_group.permissions.add(Permission.objects.get(codename='add_payment'))
+        instance.groups.add(member_group)

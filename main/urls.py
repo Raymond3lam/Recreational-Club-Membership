@@ -11,4 +11,7 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('members/', views.practice_members, name='members list'),
     path('payment/', views.payment, name='payment'),
+    path('coach/', views.manage_coaches, name='coach'),
+    path('remove_coach/<int:id>/', views.remove_coach, name='remove_coach'),
+    path('remove_member/<int:member_id>/<int:practice_id>/', views.remove_member, name='remove_member'),
 ]

@@ -7,24 +7,65 @@ from .models import Practice
 
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField()
-    
     class Meta:
         model = CustomUser
-        fields = ['username', 'password1', 'password2']
+        fields = ['username', 'password1', 'password2', 'first_name', 'last_name', 'phone_number', 'address']
 
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
-class PracticeForm(forms.ModelForm):
+class AddCoachForm(forms.ModelForm):
+    member = forms.ModelChoiceField(queryset=None)
+
+    def __init__ (self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        member_group = CustomUser.objects.filter(groups__name='Member')
+        self.fields['member'].queryset = member_group
+        self.fields['member'].label_from_instance = lambda obj: obj.first_name
+
+    class Meta:
+        model = CustomUser
+        fields = ['member']  
+
+class CreatePracticeForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        coach_group = CustomUser.objects.filter(groups__name='Coach')
+        self.fields['coach'].queryset = coach_group
+        self.fields['coach'].label_from_instance = lambda obj: obj.first_name
+
     class Meta:
         model = Practice
-        fields = ['name', 'description', 'coach', 'date', 'members']
+        fields = ['name', 'description', 'coach', 'date']
         widgets = {
-            'members': forms.CheckboxSelectMultiple(),
             'date': forms.DateTimeInput(attrs={'type': 'datetime-local'})
         }
+
+class AddMemberToPracticeForm(forms.ModelForm):
+    members = forms.ModelChoiceField(queryset=CustomUser.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.id:
+            self.fields['members'].queryset = CustomUser.objects.filter(groups__name='Member').exclude(member_practices=self.instance)
+            self.fields['members'].label_from_instance = lambda obj: obj.first_name
+
+    class Meta:
+        model = Practice
+        fields = ['members']
+
+class ManagePracticeCoachesForm(forms.ModelForm):
+    practice = forms.ModelChoiceField(queryset=Practice.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['coach'].queryset = CustomUser.objects.filter(groups__name='Coach')
+        self.fields['coach'].label_from_instance = lambda obj: obj.first_name
+
+    class Meta:
+        model = Practice
+        fields = ['practice', 'coach']
 
 class PaymentForm(forms.ModelForm):
 

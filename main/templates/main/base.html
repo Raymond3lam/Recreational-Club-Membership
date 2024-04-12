@@ -52,15 +52,26 @@
         </ul>
           {% if user.is_authenticated %}
           <ul class="navbar-nav">
+            {% if perms.main.manage_coaches %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'coach' %}">Manage Coaches</a>
+            </li>
+            {% endif %}
+            {% if perms.main.change_practice or perms.main.add_practice %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'practice' %}">Practices</a>
+            </li>
+            {% endif %}
+            {% if perms.main.view_customuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'members list' %}">Members List</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'practice' %}">Practice</a>
-            </li>
+            {% endif %}
+            {% if perms.main.add_payment %}
             </li class="nav-item">
               <a class="nav-link" href="{% url 'payment' %}">Payment</a>
             </li>
+            {% endif %}
           </ul>
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">

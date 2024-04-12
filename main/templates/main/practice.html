@@ -3,13 +3,59 @@
 <h2>{{ title }}</h2>
 
 {% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Schedule Practice</button>
-    </form>
-{% else %}
-    <p>You need to <a href="{% url 'login' %}">log in</a> to schedule a practice.</p>
+    {% if form1 %}
+        <h3>Add Practice</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form1.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    {% endif %}
+    {% if form2 %}
+        <h3>Update Practice</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form2.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    {% endif %}
+    {% if perms.main.change_practice %}
+        <h3>Practices</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Members</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for practice in practices %}
+                <tr>
+                    <td>{{ practice.name }}</td>
+                    <td>{{ practice.date }}</td>
+                    <td>
+                        {% for member in practice.members.all %}
+                        <div>
+                            <span>{{ member.first_name }} {{ member.last_name }}</span>
+                            <a href = "{% url 'remove_member' member.id practice.id %}" class="btn btn-warning">Remove Member</a>
+                        </div>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <form method="post" style="display: inline;">
+                            {% csrf_token %}
+                            {{ practice.form.as_p }}
+                            <input type="hidden" name="practice_id" value="{{ practice.id }}">
+                            <button type="submit" class="btn btn-primary">Add Member</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endif %}
 
 {% endblock %}

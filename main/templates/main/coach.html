@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<h1>Manage Coaches</h1>
+
+<table class="table">
+<thead>
+    <tr>
+    <th>Coach</th>
+    <th>Phone</th>
+    <th>Address</th>
+    <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for coach in coaches %}
+    <tr>
+        <td>{{ coach.first_name }} {{ coach.last_name }}</td>
+        <td>{{ coach.phone_number }}</td>
+        <td>{{ coach.address }}</td>
+        <td><a href = "{% url 'remove_coach' coach.id %}" class="btn btn-warning">Remove</a></td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+
+<h2>Add Coach</h2>
+<form method ="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Coach</button>
+</form>
+
+{% endblock content %}
