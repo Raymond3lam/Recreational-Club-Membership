@@ -1,5 +1,8 @@
 {% extends 'main/base.html' %}
 {% block content %}
+
+{% load crispy_forms_tags %}
+
 <h2>{{ title }}</h2>
 
 {% if user.is_authenticated %}
@@ -7,7 +10,7 @@
         <h3>Add Practice</h3>
         <form method="post">
             {% csrf_token %}
-            {{ form1.as_p }}
+            {{ form1|crispy }}
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     {% endif %}
@@ -15,7 +18,7 @@
         <h3>Update Practice</h3>
         <form method="post">
             {% csrf_token %}
-            {{ form2.as_p }}
+            {{ form2|crispy }}
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     {% endif %}
@@ -46,7 +49,7 @@
                     <td>
                         <form method="post" style="display: inline;">
                             {% csrf_token %}
-                            {{ practice.form.as_p }}
+                            {{ practice.form|crispy }}
                             <input type="hidden" name="practice_id" value="{{ practice.id }}">
                             <button type="submit" class="btn btn-primary">Add Member</button>
                         </form>
