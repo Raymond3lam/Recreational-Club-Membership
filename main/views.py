@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from . import models
+from . import models 
 from django.http import HttpResponse
 from django.db.models import Q
-from .models import Practice, Group
+from .models import Practice, Group, Payment
 from .forms import ManagePracticeCoachesForm, AddMemberToPracticeForm, PaymentForm, RegisterForm, LoginForm, CreatePracticeForm, AddCoachForm, AnnouncementForm, UpdateAnnouncementForm
 from django.contrib.auth.decorators import login_required, permission_required
-
+from django.db.models import Sum
 # Create your views here.
 def home(request):
     return render(request, 'main/home.html')
@@ -60,6 +60,9 @@ def treasurer_practice(request):
     practices = Practice.objects.all()
     form = CreatePracticeForm()
 
+
+    total_member_payments = Payment.objects.aggregate(total=Sum('amount'))['total'] or 0
+
     if request.method == 'POST':
         form = CreatePracticeForm(request.POST)
     if form.is_valid():
@@ -102,8 +105,12 @@ def treasurer_practice(request):
             target_users = models.CustomUser.objects.filter(username=practice.coach.username)
             announcement.target.set(target_users)
             return redirect('treasurer_practice')
-    context.update({'practices': practices, 'form': form})
+    context.update({'practices': practices, 'form': form, 'total_member_payments': total_member_payments,'total_revenue': total_member_payments })
     return render(request, 'main/treasurer_practice.html', context)
+
+
+
+
 
 def delete_practice(request, id):
     practice = Practice.objects.get(id=id)
@@ -119,6 +126,7 @@ def delete_practice(request, id):
     announcement.target.set(target_users)
     practice.delete()
     return redirect('treasurer_practice')
+
 
 @permission_required('main.add_payment')
 def payment(request):

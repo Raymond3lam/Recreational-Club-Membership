@@ -23,6 +23,9 @@ class Payment(models.Model):
     class Meta:
         unique_together = ('user', 'date', 'practice')
         
+
+
+
 class Practice(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
