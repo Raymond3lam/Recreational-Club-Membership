@@ -57,9 +57,14 @@
               <a class="nav-link" href="{% url 'coach' %}">Manage Coaches</a>
             </li>
             {% endif %}
-            {% if perms.main.change_practice or perms.main.add_practice %}
+            {% if perms.main.add_practice %}
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'practice' %}">Practices</a>
+              <a class="nav-link" href="{% url 'treasurer_practice' %}">Practices</a>
+            </li>
+            {% endif %}
+            {% if perms.main.change_practice %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'coach_practice' %}">Practices</a>
             </li>
             {% endif %}
             {% if perms.main.view_customuser %}

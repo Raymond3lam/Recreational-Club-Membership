@@ -1,5 +1,6 @@
 {% extends 'main/base.html' %}
 {% block content %}
+{% load crispy_forms_tags %}
 <style>
     .form-container {
         max-width: 500px;
@@ -25,8 +26,6 @@
         margin-bottom: 20px;
     }
 </style>
-
-{% load crispy_forms_tags %}
 
 <div class="form-container">
     <h2 class="page-title">Advance Payment Form</h2>

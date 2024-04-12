@@ -1,21 +1,31 @@
 {% extends 'main/base.html' %}
    
 {% block content %}
-<h1>Announcements Board</h1>
+<div class="d-flex justify-content-between align-items-center">
+    <h1>Announcements Board</h1>
+    {% if perms.main.add_announcement %}
+    <a href="{% url 'add_announcement' %}" class="btn btn-primary">Create Announcement</a>
+    {% endif %}
+</div>
 {% for announcement in announcements %}
     <div class="card my-4">
         <h2 class="card-header">{{ announcement.title }}</h5>
         <div class="card-body">
             {% if announcement.date_posted != announcement.date_updated %}
-            <p class="card-text"><small>{{ announcement.author }} updated on: {{ announcement.date_updated }}</small></p>
+            <p class="card-text"><small>{{ announcement.author.first_name }} updated on: {{ announcement.date_updated }}</small></p>
             {% else %}
-            <p class="card-text"><small>{{ announcement.author }} posted on: {{ announcement.date_posted }}</small></p>
+            <p class="card-text"><small>{{ announcement.author.first_name }} posted on: {{ announcement.date_posted }}</small></p>
             {% endif %}
-            <h5 class="card-title">{{ announcement.content }}</h5>
-            <div class="d-flex justify-content-end">
-                <a href="#" class="btn btn-primary">Sign up</a>
+            <h5 style="white-space: pre-line;" class="card-title">{{ announcement.content|linebreaks }}</h5>
+            {% if request.user == announcement.author %}
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'update_announcement' announcement.id %}" class="btn btn-primary">Update</a>
+                <a href="{% url 'delete_announcement' announcement.id %}" class="btn btn-danger">Delete</a>
             </div>
+            {% endif %}
         </div>
     </div>
 {% endfor %}
+
+
 {% endblock content %}
