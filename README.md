@@ -18,6 +18,24 @@ Go to the project directory
   cd Recreational-Club-Membership 
 ```
 
+Create virtual environment
+
+```bash
+  pip install virtualenv
+  python<version> -m venv .venv
+```
+
+Activate virtual environment
+
+MacOS/Linux:
+```bash
+  source .env/bin/activate
+```
+Windows:
+```bash
+  env/Scripts/activate.bat
+```
+
 Install dependencies
 
 ```bash
