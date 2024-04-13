@@ -33,6 +33,7 @@
         <form method="post">
             {% csrf_token %} 
             {{ form|crispy }}
+            <h3>Charge: {{ amount }}</h3>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     {% else %}
