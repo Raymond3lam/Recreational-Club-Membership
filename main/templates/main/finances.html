@@ -4,9 +4,11 @@
 {% load crispy_forms_tags %}
 
 <div class="section-header">
-    <h3>Income Statement</h3>
+    <h3>Income Statement for {{ month }}</h3>
 </div>
+
 <div class="form-section">
+    <h3>Income</h3>
     <table class="table">
         <thead>
             <tr>
@@ -30,5 +32,42 @@
         </tbody>
     </table>
 </div>
+
+<div class="form-section">
+    <h3>Expenses</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type of Expense</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Coach Expenses</td>
+                <td>${{ total_coach_expenses }}</td>
+            </tr>
+            <tr>
+                <td>Total Expenses</td>
+                <td>${{ total_expenses }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="form-section">
+    <h3>Net Income</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Net Income</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>${{ net_income }}</td>
+            </tr>
+        </tbody>
+    </table>
 
 {% endblock %}

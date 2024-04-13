@@ -1,4 +1,6 @@
-from datetime import timedelta
+from calendar import monthrange
+from datetime import date, timedelta
+import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models 
@@ -256,12 +258,31 @@ def update_announcement(request,id):
         return redirect('announcements')
     
 def finances(request):
-    total_member_payments = Payment.objects.aggregate(total=Sum('amount'))['total'] or 0
+    today = date.today()
+    _, last_day = monthrange(today.year, today.month)
+    last_day_this_month = today.replace(day=last_day)
+
+    total_member_payments = Payment.objects.filter(
+        Q(date__lte=last_day_this_month) &
+        Q(date__gte=today.replace(day=1))
+    ).aggregate(total=Sum('amount'))['total'] or 0
     total_revenue = total_member_payments
+
+    total_coach_expenses = models.Expense.objects.filter(
+        Q(category='Coach') & 
+        Q(due__lte=last_day_this_month) & 
+        Q(paid=False)
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    total_expenses = total_coach_expenses
+    income = total_revenue - total_expenses
     context = {
         'title': 'Club Finances',
+        'month': today.strftime('%B'),
         'total_member_payments': total_member_payments,
-        'total_revenue': total_revenue
+        'total_revenue': total_revenue,
+        'total_coach_expenses': total_coach_expenses,
+        'total_expenses': total_expenses,
+        'net_income': income
     }
     return render(request, 'main/finances.html', context)
 
