@@ -7,7 +7,7 @@ from . import models
 from django.http import HttpResponse
 from django.db.models import Q
 from .models import Practice, Group, Payment
-from .forms import ManagePracticeCoachesForm, AddMemberToPracticeForm, PaymentForm, RegisterForm, LoginForm, CreatePracticeForm, AddCoachForm, AnnouncementForm, UpdateAnnouncementForm
+from .forms import ExpenseForm, ManagePracticeCoachesForm, AddMemberToPracticeForm, PaymentForm, RegisterForm, LoginForm, CreatePracticeForm, AddCoachForm, AnnouncementForm, UpdateAnnouncementForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Sum
 from django.contrib import messages
@@ -312,9 +312,20 @@ def members(request):
 
 @permission_required('main.manage_finances')
 def expenses(request):
+    form = ExpenseForm()
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('expenses')
+    else:
+        form = ExpenseForm()
+
     expenses = models.Expense.objects.filter(paid=False).order_by('due')
     context = {
         'title': 'Club Expenses',
-        'expenses': expenses
+        'expenses': expenses,
+        'form': form
     }
     return render(request, 'main/expenses.html', context)
+

@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.html import format_html
-from .models import CustomUser, Payment, Announcement, Practice
+from .models import CustomUser, Expense, Payment, Announcement, Practice
 from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Div
@@ -180,3 +180,13 @@ class PaymentForm(forms.ModelForm):
             practice.members.add(self.user)
             practice.save()
         return instance
+
+class ExpenseForm(forms.ModelForm):
+    category = forms.ChoiceField(choices=[('Hall', 'Hall'), ('Other', 'Other')])
+    class Meta:
+        model = Expense
+        fields = ['amount', 'due', 'notes', 'category']
+        widgets = {
+            'due': forms.DateTimeInput(attrs={'type': 'datetime-local'})
+        }
+        
