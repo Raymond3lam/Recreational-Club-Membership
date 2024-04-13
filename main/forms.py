@@ -25,7 +25,7 @@ class AnnouncementForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
-        self.fields['target'].queryset = CustomUser.objects.exclude(id=self.user.id)
+        self.fields['target'].queryset = CustomUser.objects.exclude(id=self.user.id).exclude(is_superuser=True)
         self.fields['target'].label_from_instance = self.label_from_instance
 
     def label_from_instance(self, obj):

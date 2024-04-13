@@ -20,7 +20,7 @@ def about(request):
     }
     return render(request, 'main/about.html', context)
 
-def add_accountment(request):
+def add_announcement(request):
     if request.method == 'POST':
         form = AnnouncementForm(request.POST, user=request.user)
         if form.is_valid():
