@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from . import models 
@@ -72,6 +73,13 @@ def treasurer_practice(request):
         announcement.save()
         target_users = models.CustomUser.objects.filter(username=practice.coach.username)
         announcement.target.set(target_users)
+        expense = models.Expense(
+            amount=50,
+            due=practice.date + timedelta(weeks=2),
+            notes=f'Practice: {practice.name} id: {practice.id}',
+            category='Coach',
+        )
+        expense.save()
         return redirect('treasurer_practice')
     else:
         form = CreatePracticeForm()
@@ -117,6 +125,8 @@ def delete_practice(request, id):
     for member in practice.members.all():
         target_users |= models.CustomUser.objects.filter(username=member.username)
     announcement.target.set(target_users)
+    expense = models.Expense.objects.filter(notes=f'Practice: {practice.name} id: {practice.id}')
+    expense.delete()
     practice.delete()
     return redirect('treasurer_practice')
 
@@ -274,3 +284,12 @@ def members(request):
                 my_dict[member] = (1, unpaid)
     context = {"members": my_dict}
     return render(request, 'main/members.html', context=context)
+
+@permission_required('main.manage_finances')
+def expenses(request):
+    expenses = models.Expense.objects.filter(paid=False).order_by('due')
+    context = {
+        'title': 'Club Expenses',
+        'expenses': expenses
+    }
+    return render(request, 'main/expenses.html', context)

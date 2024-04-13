@@ -29,8 +29,13 @@ class Payment(models.Model):
     class Meta:
         unique_together = ('user', 'date', 'practice')
         
-
-
+class Expense(models.Model):
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateTimeField(default=timezone.now)
+    paid = models.BooleanField(default=False)
+    due = models.DateTimeField(default=timezone.now)
+    notes = models.TextField()
+    category = models.CharField(max_length=100)
 
 class Practice(models.Model):
     name = models.CharField(max_length=100)

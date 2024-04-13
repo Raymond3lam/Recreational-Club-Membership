@@ -20,4 +20,5 @@ urlpatterns = [
     path('update_announcement/<int:id>/', views.update_announcement, name='update_announcement'),
     path('finances/', views.finances, name='finances'),
     path('members/', views.members, name='members'),
+    path('expenses/', views.expenses, name='expenses'),
 ]
