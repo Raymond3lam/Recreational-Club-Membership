@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from . import models 
 from django.http import HttpResponse
 from django.db.models import Q
-from .models import Practice, Group, Payment
+from .models import Practice, Group, Payment, CustomUser
 from .forms import ExpenseForm, ManagePracticeCoachesForm, AddMemberToPracticeForm, PaymentForm, RegisterForm, LoginForm, CreatePracticeForm, AddCoachForm, AnnouncementForm, UpdateAnnouncementForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Sum
@@ -307,6 +307,10 @@ def members(request):
                 my_dict[member] = (attendances + 1, unpaid_old + unpaid)
             else:
                 my_dict[member] = (1, unpaid)
+    for member in CustomUser.objects.all().filter(groups__name='Member').exclude(is_superuser=True):
+        if member not in my_dict:
+            my_dict[member] = (0, 0)
+        
     context = {"members": my_dict}
     return render(request, 'main/members.html', context=context)
 
