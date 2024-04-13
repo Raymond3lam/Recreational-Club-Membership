@@ -136,6 +136,23 @@ def delete_practice(request, id):
 
 @permission_required('main.add_payment')
 def payment(request):
+    amount = 10
+    # discount if top ten most attended users
+    top_ten = CustomUser.objects.filter(groups__name='Member').exclude(is_superuser=True).annotate(practice_count=Sum('member_practices')).order_by('-practice_count')[:10]
+    if request.user in top_ten:
+        amount = amount - amount*0.1
+    # check all classes attended within last 3 months 
+    three_months_ago = date.today() - timedelta(days=90)
+    practices = Practice.objects.filter(date__gte=three_months_ago)
+    good_three = True
+    for practice in practices:
+        if not practice.paid(request.user):
+            good_three = False
+            break
+    if good_three:
+        amount = amount - amount*0.1
+    else:
+        amount = amount + amount*0.2
     if request.method == 'POST':
         form = PaymentForm(request.POST, user=request.user)
         if form.is_valid():
@@ -154,7 +171,8 @@ def payment(request):
     
     context = {
         'title': 'Make Payment',
-        'form': form
+        'form': form,
+        'amount': amount
     }
     return render(request, 'main/payment.html', context)
 

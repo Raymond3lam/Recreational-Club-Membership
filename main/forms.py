@@ -1,3 +1,4 @@
+from datetime import date, timedelta
 from django import forms
 from django.utils.html import format_html
 from .models import CustomUser, Expense, Payment, Announcement, Practice
@@ -173,9 +174,27 @@ class PaymentForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.user = self.user
-        instance.amount = 10
+        amount = 10
+        # discount if top ten most attended users
+        top_ten = CustomUser.objects.all().exclude(is_superuser=True).order_by('-payment_count')[:10]
+        if instance.user in top_ten:
+            amount = amount - amount*0.1
+        # check all classes attended within last 3 months 
+        three_months_ago = date.today() - timedelta(days=90)
+        practices = Practice.objects.filter(date__gte=three_months_ago)
+        good_three = True
+        for practice in practices:
+            if not practice.paid(instance.user):
+                good_three = False
+                break
+        if good_three:
+            amount = amount - amount*0.1
+        else:
+            amount = amount + amount*0.2
+
         if commit:
             instance.save()
+            instance.amount = amount
             practice = instance.practice
             practice.members.add(self.user)
             practice.save()
