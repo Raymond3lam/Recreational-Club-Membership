@@ -134,7 +134,7 @@ class AddMemberToPracticeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance and self.instance.id:
-            self.fields['members'].queryset = CustomUser.objects.filter(groups__name='Member').exclude(member_practices=self.instance)
+            self.fields['members'].queryset = CustomUser.objects.filter(groups__name='Member').exclude(member_practices=self.instance).exclude(is_superuser=True)
             self.fields['members'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     class Meta:

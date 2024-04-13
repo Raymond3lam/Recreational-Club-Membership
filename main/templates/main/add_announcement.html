@@ -4,7 +4,17 @@
 <h1>Create Announcement</h1>
 <form method="post">
     {% csrf_token %}
-    {{ form|crispy}}
+    <div class="row">
+        <div class="col">
+            {{ form.title|as_crispy_field }}
+            {{ form.content|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.group|as_crispy_field }}
+            {{ form.target|as_crispy_field }}
+            {{ form.target_practices|as_crispy_field }}
+        </div>
+    </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
