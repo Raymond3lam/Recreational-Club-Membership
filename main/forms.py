@@ -107,7 +107,7 @@ class AddCoachForm(forms.ModelForm):
     def __init__ (self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         member_group = CustomUser.objects.filter(groups__name='Member')
-        self.fields['member'].queryset = member_group
+        self.fields['member'].queryset = member_group.exclude(first_name="")
         self.fields['member'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name}"
 
     class Meta:

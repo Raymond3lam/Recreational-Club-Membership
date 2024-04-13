@@ -18,13 +18,10 @@
               <div class="row gy-4 gy-md-0 gx-xxl-5X">
                 <div class="col-12 col-md-6">
                   <div class="d-flex">
-                  
+                  {% if not user.is_authenticated %}
                     <div>
                       <h4 class="mb-3">Discounts</h4>
                       <p class="text-secondary mb-0">Get up to 10% for one class if you regularly attend!</p>
-                    
-                      
-
                     </div>
                   </div>
                 </div>
@@ -43,6 +40,7 @@
                       </div>
                     
                   </div>
+                  {% endif %}
                 </div>
               </div>
             </div>

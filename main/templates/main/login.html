@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
 
 <h1 class="text-center mt-5">Login</h1>
+
 <div class="container"> 
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -15,4 +16,20 @@
         </div>
     </div>
 </div>
+
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger text-center mt-3 limit-width" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+
+<style>
+    .limit-width {
+        max-width: 500px; /* Adjust the max-width as needed */
+        margin: 0 auto; /* Center the box horizontally */
+    }
+</style>
+
 {% endblock %}

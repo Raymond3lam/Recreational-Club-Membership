@@ -10,6 +10,7 @@ from .models import Practice, Group, Payment
 from .forms import ManagePracticeCoachesForm, AddMemberToPracticeForm, PaymentForm, RegisterForm, LoginForm, CreatePracticeForm, AddCoachForm, AnnouncementForm, UpdateAnnouncementForm
 from django.contrib.auth.decorators import login_required, permission_required
 from django.db.models import Sum
+from django.contrib import messages
 # Create your views here.
 def home(request):
     return render(request, 'main/home.html')
@@ -177,6 +178,9 @@ def user_login(request):
             if user:
                 login(request, user)
                 return redirect('home')
+            else:
+                messages.error(request, 'Invalid username or password')
+                
     else:
         form = LoginForm()
     return render(request, 'main/login.html', {'form': form})
