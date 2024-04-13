@@ -263,11 +263,10 @@ def update_announcement(request,id):
     
 def finances(request):
     today = date.today()
-    _, last_day = monthrange(today.year, today.month)
-    last_day_this_month = today.replace(day=last_day)
+    first_day_next_month = today.replace(day=1, month=today.month+1)
 
     total_member_payments = Payment.objects.filter(
-        Q(date__lte=last_day_this_month) &
+        Q(date__lte=first_day_next_month) &
         Q(date__gte=today.replace(day=1))
     ).aggregate(total=Sum('amount'))['total'] or 0
 
@@ -275,17 +274,17 @@ def finances(request):
 
     total_coach_expenses = models.Expense.objects.filter(
         Q(category='Coach') & 
-        Q(due__lte=last_day_this_month) & 
+        Q(due__lte=first_day_next_month) & 
         Q(paid=False)
     ).aggregate(total=Sum('amount'))['total'] or 0
     total_hall_expenses = models.Expense.objects.filter(
         Q(category='Hall') &
-        Q(due__lte=last_day_this_month) &
+        Q(due__lte=first_day_next_month) &
         Q(paid=False)
     ).aggregate(total=Sum('amount'))['total'] or 0
     total_other_expenses = models.Expense.objects.filter(
         Q(category='Other') &
-        Q(due__lte=last_day_this_month) &
+        Q(due__lte=first_day_next_month) &
         Q(paid=False)
     ).aggregate(total=Sum('amount'))['total'] or 0
     total_expenses = total_hall_expenses + total_other_expenses + total_coach_expenses
