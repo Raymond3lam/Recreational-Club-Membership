@@ -1,5 +1,7 @@
+from django.db.models import Count
 from datetime import date, timedelta
 from django import forms
+from django.db.models import Sum
 from django.utils.html import format_html
 from .models import CustomUser, Expense, Payment, Announcement, Practice
 from django.contrib.auth.forms import UserCreationForm
@@ -176,7 +178,7 @@ class PaymentForm(forms.ModelForm):
         instance.user = self.user
         amount = 10
         # discount if top ten most attended users
-        top_ten = CustomUser.objects.all().exclude(is_superuser=True).order_by('-payment_count')[:10]
+        top_ten = CustomUser.objects.filter(groups__name='Member').exclude(is_superuser=True).annotate(practice_count=Sum('member_practices')).order_by('-practice_count')[:10]
         if instance.user in top_ten:
             amount = amount - amount*0.1
         # check all classes attended within last 3 months 
@@ -191,10 +193,9 @@ class PaymentForm(forms.ModelForm):
             amount = amount - amount*0.1
         else:
             amount = amount + amount*0.2
-
+        instance.amount = amount
         if commit:
             instance.save()
-            instance.amount = amount
             practice = instance.practice
             practice.members.add(self.user)
             practice.save()
