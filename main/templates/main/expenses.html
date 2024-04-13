@@ -18,6 +18,7 @@
                 <th>Date</th>
                 <th>Due</th>
                 <th>Notes</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -28,6 +29,12 @@
                     <td>{{ expense.date }}</td>
                     <td>{{ expense.due }}</td>
                     <td>{{ expense.notes }}</td>
+                    <td>
+                        <form method="post" action="{% url 'pay_expense' expense.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                            <button type="submit" class="btn btn-primary">Pay</button>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

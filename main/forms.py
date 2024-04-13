@@ -188,5 +188,4 @@ class ExpenseForm(forms.ModelForm):
         fields = ['amount', 'due', 'notes', 'category']
         widgets = {
             'due': forms.DateTimeInput(attrs={'type': 'datetime-local'})
-        }
-        
+        }        

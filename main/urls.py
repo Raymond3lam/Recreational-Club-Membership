@@ -21,4 +21,5 @@ urlpatterns = [
     path('finances/', views.finances, name='finances'),
     path('members/', views.members, name='members'),
     path('expenses/', views.expenses, name='expenses'),
+    path('pay_expense/<int:id>/', views.pay_expense, name='pay_expense'),
 ]

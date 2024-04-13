@@ -270,6 +270,7 @@ def finances(request):
         Q(date__lte=last_day_this_month) &
         Q(date__gte=today.replace(day=1))
     ).aggregate(total=Sum('amount'))['total'] or 0
+
     total_revenue = total_member_payments
 
     total_coach_expenses = models.Expense.objects.filter(
@@ -277,7 +278,17 @@ def finances(request):
         Q(due__lte=last_day_this_month) & 
         Q(paid=False)
     ).aggregate(total=Sum('amount'))['total'] or 0
-    total_expenses = total_coach_expenses
+    total_hall_expenses = models.Expense.objects.filter(
+        Q(category='Hall') &
+        Q(due__lte=last_day_this_month) &
+        Q(paid=False)
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    total_other_expenses = models.Expense.objects.filter(
+        Q(category='Other') &
+        Q(due__lte=last_day_this_month) &
+        Q(paid=False)
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    total_expenses = total_hall_expenses + total_other_expenses + total_coach_expenses
     income = total_revenue - total_expenses
     context = {
         'title': 'Club Finances',
@@ -285,6 +296,8 @@ def finances(request):
         'total_member_payments': total_member_payments,
         'total_revenue': total_revenue,
         'total_coach_expenses': total_coach_expenses,
+        'total_hall_expenses': total_hall_expenses,
+        'total_other_expenses': total_other_expenses,
         'total_expenses': total_expenses,
         'net_income': income
     }
@@ -329,3 +342,8 @@ def expenses(request):
     }
     return render(request, 'main/expenses.html', context)
 
+def pay_expense(request, id):
+    expense = models.Expense.objects.get(id=id)
+    expense.paid = True
+    expense.save()
+    return redirect('expenses')
